@@ -43,15 +43,17 @@ module SendNsca
     def send_nsca
       intialize_connection
 
-      convertor = Encryption::Cryptor.new(@methods, :iv => iv, :password => @password)
-
-      encrypted_string_to_send = convertor.encrypt(timestring, @return_code, @hostname, @service, @status)
+      encrypted_string_to_send = cryptor.encrypt(timestring, @return_code, @hostname, @service, @status)
 
       @tcp_client.send(encrypted_string_to_send, 0)
       @tcp_client.close
     end
 
     private
+
+    def cryptor
+      Encryption::Cryptor.new(@methods, :iv => iv, :password => @password)
+    end
 
     def intialize_connection
       begin
